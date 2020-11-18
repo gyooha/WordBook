@@ -28,7 +28,7 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun WordBookTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun WordBookTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
@@ -36,9 +36,9 @@ fun WordBookTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
     }
 
     MaterialTheme(
-            colors = colors,
-            typography = typography,
-            shapes = shapes,
-            content = content
+        colors = colors,
+        typography = typography,
+        shapes = shapes,
+        content = content
     )
 }

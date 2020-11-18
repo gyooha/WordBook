@@ -44,5 +44,6 @@ class RootViewModel @ViewModelInject constructor(): ViewModel() {
 enum class ScreenState {
     HOME,
     EDITOR,
+    CREATE,
     ALARM
 }
