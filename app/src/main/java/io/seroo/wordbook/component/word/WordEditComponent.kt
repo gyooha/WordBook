@@ -45,15 +45,15 @@ fun WordEditView(rootViewModel: RootViewModel, wordViewModel: WordViewModel) {
 @Composable
 fun WordEditComponent(rootViewModel: RootViewModel, wordViewModel: WordViewModel) {
     wordViewModel.getWord()?.let { actualWord ->
+        var word by savedInstanceState { actualWord.word }
+        var meanFirst by savedInstanceState { actualWord.meanFirst }
+        var meanSecond by savedInstanceState { actualWord.meanSecond }
+
         Column(
             modifier = Modifier.fillMaxWidth().fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            var word by savedInstanceState { actualWord.word }
-            var meanFirst by savedInstanceState { actualWord.meanFirst }
-            var meanSecond by savedInstanceState { actualWord.meanSecond }
-
             TextField(
                 value = word,
                 onValueChange = { word = it },

@@ -1,4 +1,8 @@
 package io.seroo.data.repository
 
-class WordRepository {
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class WordRepository @Inject constructor() {
 }
