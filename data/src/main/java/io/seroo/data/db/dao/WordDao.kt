@@ -2,16 +2,15 @@ package io.seroo.data.db.dao
 
 import androidx.room.*
 import io.seroo.data.model.Word
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WordDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertWord(vararg word: Word)
+    @Insert
+    suspend fun insertWord(vararg words: Word)
 
     @Delete
-    suspend fun deleteWord(word: Word)
+    suspend fun deleteWord(vararg words: Word)
 
     @Query("SELECT * FROM words WHERE id = :id")
     suspend fun selectWordById(id: Long): Word?
@@ -19,6 +18,6 @@ interface WordDao {
     @Query("SELECT * FROM words")
     suspend fun selectWords(): List<Word>
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateWord(vararg word: Word)
 }

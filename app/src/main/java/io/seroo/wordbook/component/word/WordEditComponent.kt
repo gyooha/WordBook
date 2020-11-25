@@ -78,7 +78,7 @@ fun WordEditComponent(rootViewModel: RootViewModel, wordViewModel: WordViewModel
             Button(
                 onClick = {
                     wordViewModel.apply {
-                        updateWord(WordUIModel(word, meanFirst, meanSecond))
+                        updateWord(WordUIModel(actualWord.id, word, meanFirst, meanSecond, actualWord.createdAt, System.currentTimeMillis()))
                         selectedDone()
                         rootViewModel.addScreenState(ScreenState.HOME)
                     }

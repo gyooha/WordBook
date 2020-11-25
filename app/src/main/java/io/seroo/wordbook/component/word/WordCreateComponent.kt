@@ -72,7 +72,7 @@ fun WordCreateComponent(rootViewModel: RootViewModel, wordViewModel: WordViewMod
         Button(
             onClick = {
                 wordViewModel.apply {
-                    addWord(WordUIModel(word, meanFirst, meanSecond))
+                    addWord(WordUIModel(id = 0, word, meanFirst, meanSecond, System.currentTimeMillis(), System.currentTimeMillis()))
                     selectedDone()
                     rootViewModel.addScreenState(ScreenState.HOME)
                 }

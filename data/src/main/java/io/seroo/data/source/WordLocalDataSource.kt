@@ -1,23 +1,44 @@
 package io.seroo.data.source
 
+import io.seroo.data.common.WordNotFoundException
 import io.seroo.data.db.dao.WordDao
 import io.seroo.data.model.Word
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class WordLocalDataSource @Inject constructor(private val wordDao: WordDao): LocalDataSource {
+interface WordLocalDataSource {
+    fun insertWords(vararg words: Word): Flow<Unit>
+    fun deleteWords(vararg words: Word): Flow<Unit>
+    fun updateWords(vararg words: Word): Flow<Unit>
+    fun selectWordById(id: Long): Flow<Word>
+    fun selectWords(): Flow<List<Word>>
+}
 
-    fun insertWord(vararg word: Word) = Unit
+@Singleton
+class WordLocalDataSourceImpl @Inject constructor(private val wordDao: WordDao): WordLocalDataSource {
 
-    fun deleteWord(word: Word) = Unit
+    override fun insertWords(vararg words: Word): Flow<Unit> = flow {
+        emit(wordDao.insertWord(*words))
+    }
 
-    fun selectWordById(id: Long): Flow<Word> = flow {
+    override fun updateWords(vararg words: Word): Flow<Unit> = flow {
+        emit(wordDao.updateWord(*words))
+    }
+
+    override fun deleteWords(vararg words: Word): Flow<Unit> = flow {
+        emit(wordDao.deleteWord(*words))
+    }
+
+    override fun selectWordById(id: Long): Flow<Word> = flow {
         when (val word = wordDao.selectWordById(id)) {
-            null -> throw NoSuchElementException("word is null")
+            null -> throw WordNotFoundException
             else -> emit(word)
         }
     }
 
-    fun selectWord(): List<Word> = listOf()
+    override fun selectWords(): Flow<List<Word>> = flow {
+        emit(wordDao.selectWords())
+    }
 }

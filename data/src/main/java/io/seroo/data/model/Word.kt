@@ -6,7 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "words")
 data class Word(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
     val word: String,
     @ColumnInfo(name = "mean_first") val meanFirst: String,
     @ColumnInfo(name = "mean_second") val meanSecond: String,

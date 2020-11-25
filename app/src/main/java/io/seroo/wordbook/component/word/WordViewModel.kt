@@ -1,47 +1,75 @@
 package io.seroo.wordbook.component.word
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.*
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.ViewModel
-import io.seroo.wordbook.TestDataProvider
+import androidx.lifecycle.*
+import io.seroo.data.CoroutineDispatcher
+import io.seroo.data.model.Word
+import io.seroo.data.repository.WordRepository
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.*
+import kotlin.properties.Delegates
 
-class WordViewModel @ViewModelInject constructor(): ViewModel() {
+class WordViewModel @ViewModelInject constructor(
+    private val dispatchers: CoroutineDispatcher,
+    private val wordRepository: WordRepository,
+): ViewModel() {
 
-    var wordList by mutableStateOf(listOf<WordUIModel>())
-        private set
-    /*private val _wordCardList = MutableLiveData<List<WordUIModel>>()
-    val wordCardList: LiveData<List<WordUIModel>> get() = _wordCardList*/
+    private val _wordList = MutableLiveData<List<WordUIModel>>()
+    val wordList: LiveData<List<WordUIModel>> get() = _wordList
 
-    val createNewWordUIModel get() = mutableStateOf(WordUIModel("", "", ""))
-
-    private var _selectedWordPosition = -1
-//    val selectedWordPosition get() = _selectedWordPosition
+    private var _selectedWordPosition by Delegates.observable(-1) { _, old, new ->
+        Log.d("GYH", "old : $old, new : $new")
+    }
 
     init {
-        // TODO replace
-//        wordList = TestDataProvider.wordList
+        wordRepository.selectWords()
+            .map { it.map(Word::toWordUIModel) }
+            .flowOn(dispatchers.IO)
+            .onEach { _wordList.value = it }
+            .catch { it.printStackTrace() }
+            .flowOn(dispatchers.Main)
+            .launchIn(viewModelScope)
     }
 
     fun setSelectedWordPosition(position: Int) {
         _selectedWordPosition = position
     }
 
-    fun getWord() = wordList.getOrNull(_selectedWordPosition)
+    fun getWord() = wordList.value?.getOrNull(_selectedWordPosition)
 
     fun addWord(wordUIModel: WordUIModel) {
-        wordList = wordList.toMutableList().apply {
-            add(wordUIModel)
+        wordList.value?.apply {
+            val dummyList = toMutableList()
+            dummyList.add(wordUIModel)
+            _wordList.value = dummyList
+
+            wordRepository.insertWords(wordUIModel.toWord())
+                .flowOn(dispatchers.IO)
+                .catch { it.printStackTrace() }
+                .launchIn(viewModelScope)
         }
     }
 
     fun updateWord(wordUIModel: WordUIModel) {
-        wordList = wordList.toMutableList().apply {
-            this[_selectedWordPosition] = wordUIModel
+        wordList.value?.apply {
+            val dummyList = toMutableList()
+            dummyList[_selectedWordPosition] = wordUIModel
+            _wordList.value = dummyList
+
+            wordRepository.updateWords(wordUIModel.toWord())
+                .flowOn(dispatchers.IO)
+                .catch { it.printStackTrace() }
+                .launchIn(viewModelScope)
         }
     }
 
     fun selectedDone() {
         _selectedWordPosition = -1
+    }
+
+    override fun onCleared() {
+        viewModelScope.cancel()
+        super.onCleared()
     }
 }

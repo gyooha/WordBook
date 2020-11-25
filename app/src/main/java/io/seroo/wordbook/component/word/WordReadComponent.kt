@@ -9,10 +9,13 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.seroo.data.model.Word
 import io.seroo.wordbook.RootViewModel
 import io.seroo.wordbook.ScreenState
 import io.seroo.wordbook.component.common.LazyGridForIndexed
@@ -51,8 +54,9 @@ fun WordView(rootViewModel: RootViewModel, wordViewModel: WordViewModel) {
 
 @Composable
 fun WordCardListComponent(wordViewModel: WordViewModel, onClick: () -> Unit = { Unit }) {
+    val wordList by wordViewModel.wordList.observeAsState(listOf())
     LazyGridForIndexed(
-        items = wordViewModel.wordList,
+        items = wordList,
         rows = 2,
         padding = 8.dp,
         onClick = {
@@ -76,5 +80,3 @@ private fun WordCardComponent(word: WordUIModel, modifier: Modifier = Modifier) 
         if(word.meanFirst.isNotEmpty()) Text(text = word.meanFirst)
     }
 }
-
-data class WordUIModel(var word: String, var meanFirst: String, var meanSecond: String)
