@@ -5,7 +5,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.ui.focus.ExperimentalFocus
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.setContent
 import dagger.hilt.android.AndroidEntryPoint
 import io.seroo.wordbook.component.alarm.AlarmView
@@ -19,7 +20,7 @@ import io.seroo.wordbook.ui.WordBookTheme
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val rootViewModel: RootViewModel by viewModels()
+    private val navigationViewModel: NavigationViewModel by viewModels()
     private val wordViewModel: WordViewModel by viewModels()
     private val alarmViewModel: AlarmViewModel by viewModels()
 
@@ -29,21 +30,22 @@ class MainActivity : AppCompatActivity() {
             WordBookTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    when (rootViewModel.currentScreenState) {
+                    val screenState by navigationViewModel.currentScreenState.observeAsState(initial = ScreenState.HOME)
+                    when (screenState) {
                         ScreenState.HOME -> WordView(
-                            rootViewModel = rootViewModel,
+                            navigationViewModel = navigationViewModel,
                             wordViewModel = wordViewModel
                         )
                         ScreenState.ALARM -> AlarmView(
-                            rootViewModel = rootViewModel,
+                            navigationViewModel = navigationViewModel,
                             alarmViewModel = alarmViewModel
                         )
                         ScreenState.CREATE -> WordCreateView(
-                            rootViewModel = rootViewModel,
+                            navigationViewModel = navigationViewModel,
                             wordViewModel = wordViewModel
                         )
                         ScreenState.EDITOR -> WordEditView(
-                            rootViewModel = rootViewModel,
+                            navigationViewModel = navigationViewModel,
                             wordViewModel = wordViewModel
                         )
                     }
@@ -53,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        when (rootViewModel.isPopOrExit()) {
+        when (navigationViewModel.movePreviousOrExit()) {
             true -> super.onBackPressed()
             false -> Unit
         }

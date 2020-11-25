@@ -15,14 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import io.seroo.data.model.Word
-import io.seroo.wordbook.RootViewModel
+import io.seroo.wordbook.NavigationViewModel
 import io.seroo.wordbook.ScreenState
 import io.seroo.wordbook.component.common.LazyGridForIndexed
 import io.seroo.wordbook.component.root.BottomNavigationComponent
 
 @Composable
-fun WordView(rootViewModel: RootViewModel, wordViewModel: WordViewModel) {
+fun WordView(navigationViewModel: NavigationViewModel, wordViewModel: WordViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -38,16 +37,16 @@ fun WordView(rootViewModel: RootViewModel, wordViewModel: WordViewModel) {
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { rootViewModel.addScreenState(ScreenState.CREATE) }, shape = CircleShape) {
+            FloatingActionButton(onClick = { navigationViewModel.addScreenState(ScreenState.CREATE) }, shape = CircleShape) {
                 Icon(asset = Icons.Default.Add, modifier = Modifier.size(24.dp))
             }
         },
         bottomBar = {
-            BottomNavigationComponent(rootViewModel = rootViewModel)
+            BottomNavigationComponent(navigationViewModel = navigationViewModel)
         },
     ) {
         WordCardListComponent(wordViewModel = wordViewModel) {
-            rootViewModel.addScreenState(ScreenState.EDITOR)
+            navigationViewModel.addScreenState(ScreenState.EDITOR)
         }
     }
 }

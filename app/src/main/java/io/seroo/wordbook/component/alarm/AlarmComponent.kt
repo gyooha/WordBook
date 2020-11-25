@@ -13,12 +13,12 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.seroo.wordbook.RootViewModel
+import io.seroo.wordbook.NavigationViewModel
 import io.seroo.wordbook.component.common.LazyGridForIndexed
 import io.seroo.wordbook.component.root.BottomNavigationComponent
 
 @Composable
-fun AlarmView(rootViewModel: RootViewModel, alarmViewModel: AlarmViewModel) {
+fun AlarmView(navigationViewModel: NavigationViewModel, alarmViewModel: AlarmViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -26,7 +26,7 @@ fun AlarmView(rootViewModel: RootViewModel, alarmViewModel: AlarmViewModel) {
                 navigationIcon = {
                     Icon(
                         asset = Icons.Default.ArrowBack,
-                        modifier = Modifier.clickable(onClick = { rootViewModel.isPopOrExit() }).padding(8.dp)
+                        modifier = Modifier.clickable(onClick = { navigationViewModel.movePreviousOrExit() }).padding(8.dp)
                     )
                 }
             )
@@ -37,7 +37,7 @@ fun AlarmView(rootViewModel: RootViewModel, alarmViewModel: AlarmViewModel) {
             }
         },
         bottomBar = {
-            BottomNavigationComponent(rootViewModel = rootViewModel)
+            BottomNavigationComponent(navigationViewModel = navigationViewModel)
         }
     ) {
         AlarmListComponent(alarmViewModel = alarmViewModel)
