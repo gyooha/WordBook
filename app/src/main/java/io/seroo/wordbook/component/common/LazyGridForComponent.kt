@@ -19,6 +19,7 @@ fun <T> LazyGridForIndexed(
     rows: Int,
     padding: Dp,
     onClick: (Int) -> Unit,
+    itemAlignment: Alignment = Alignment.Center,
     itemContent: @Composable LazyItemScope.(T, Int) -> Unit
 ) {
     val chunkedList = items.chunked(rows)
@@ -40,10 +41,9 @@ fun <T> LazyGridForIndexed(
                 Box(
                     modifier = Modifier
                         .clickable(onClick = { onClick(currentIndex) })
-                        .weight(1F)
-                        .align(alignment = Alignment.Top)
-                        .padding(8.dp),
-                    alignment = Alignment.Center
+                        .padding(8.dp)
+                        .weight(1F),
+                    contentAlignment = itemAlignment
                 ) { itemContent(innerItem, currentIndex) }
             }
             repeat(rows - item.size) {

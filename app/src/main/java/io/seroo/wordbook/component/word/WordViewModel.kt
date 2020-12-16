@@ -18,9 +18,7 @@ class WordViewModel @ViewModelInject constructor(
     private val _wordList = MutableLiveData<List<WordUIModel>>()
     val wordList: LiveData<List<WordUIModel>> get() = _wordList
 
-    private var _selectedWordPosition by Delegates.observable(-1) { _, old, new ->
-        Log.d("GYH", "old : $old, new : $new")
-    }
+    private var _selectedWordPosition by Delegates.observable(-1) { _, old, new -> }
 
     init {
         wordRepository.selectWords()

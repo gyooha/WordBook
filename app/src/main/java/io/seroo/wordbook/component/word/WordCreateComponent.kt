@@ -22,7 +22,7 @@ fun WordCreateView(navigationViewModel: NavigationViewModel, wordViewModel: Word
                 title = { Text(text = "WordBook") },
                 navigationIcon = {
                     Icon(
-                        asset = Icons.Default.ArrowBack,
+                        imageVector = Icons.Default.ArrowBack,
                         modifier = Modifier.clickable(onClick = { navigationViewModel.movePreviousOrExit() })
                             .padding(8.dp)
                     )
@@ -44,8 +44,7 @@ fun WordCreateComponent(navigationViewModel: NavigationViewModel, wordViewModel:
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-
-        WordUpdateComponent(
+        WordUpdateableComponent(
             wordUIModel = wordViewModel.getWord(),
             onClick = { wordUIModel ->
                 wordViewModel.apply {

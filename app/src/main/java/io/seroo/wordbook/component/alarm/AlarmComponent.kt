@@ -6,7 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -25,7 +29,7 @@ fun AlarmView(navigationViewModel: NavigationViewModel, alarmViewModel: AlarmVie
                 title = { Text(text = "WordBook") },
                 navigationIcon = {
                     Icon(
-                        asset = Icons.Default.ArrowBack,
+                        Icons.Default.ArrowBack,
                         modifier = Modifier.clickable(onClick = { navigationViewModel.movePreviousOrExit() }).padding(8.dp)
                     )
                 }
@@ -33,7 +37,7 @@ fun AlarmView(navigationViewModel: NavigationViewModel, alarmViewModel: AlarmVie
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {}, shape = CircleShape) {
-                Icon(asset = Icons.Default.Add, modifier = Modifier.size(24.dp))
+                Icon(Icons.Default.Add, modifier = Modifier.size(24.dp))
             }
         },
         bottomBar = {

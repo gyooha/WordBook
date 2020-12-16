@@ -29,7 +29,7 @@ fun WordView(navigationViewModel: NavigationViewModel, wordViewModel: WordViewMo
                 actions = {
                     TextButton(
                         modifier = Modifier.padding(8.dp),
-                        onClick = { }
+                        onClick = { navigationViewModel.addScreenState(ScreenState.GAME) }
                     ) {
                         Text(text = "시작", color = Color.White)
                     }
@@ -37,8 +37,11 @@ fun WordView(navigationViewModel: NavigationViewModel, wordViewModel: WordViewMo
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navigationViewModel.addScreenState(ScreenState.CREATE) }, shape = CircleShape) {
-                Icon(asset = Icons.Default.Add, modifier = Modifier.size(24.dp))
+            FloatingActionButton(
+                onClick = { navigationViewModel.addScreenState(ScreenState.CREATE) },
+                shape = CircleShape
+            ) {
+                Icon(imageVector = Icons.Default.Add, modifier = Modifier.size(24.dp))
             }
         },
         bottomBar = {

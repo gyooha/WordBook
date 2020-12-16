@@ -18,6 +18,9 @@ interface WordDao {
     @Query("SELECT * FROM words")
     suspend fun selectWords(): List<Word>
 
+    @Query("SELECT * FROM words ORDER BY updated_at ASC LIMIT :limit")
+    suspend fun selectWordsForGame(limit: Int): List<Word>
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateWord(vararg word: Word)
 }
