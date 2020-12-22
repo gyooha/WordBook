@@ -28,3 +28,12 @@ fun WordUIModel.toWord() = Word(
     createdAt = createdAt,
     updatedAt = updatedAt
 )
+
+fun WordUIModel.toWordByUpdated() = Word(
+    id = id,
+    word = word,
+    meanFirst = meanFirst,
+    meanSecond = meanSecond,
+    createdAt = createdAt,
+    updatedAt = System.currentTimeMillis()
+)

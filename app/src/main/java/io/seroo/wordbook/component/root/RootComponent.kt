@@ -21,7 +21,7 @@ import io.seroo.wordbook.ui.purple200
 fun BottomNavigationComponent(navigationViewModel: NavigationViewModel) {
     val screenState by navigationViewModel.currentScreenState.observeAsState(initial = ScreenState.HOME)
 
-    BottomNavigation(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.onPrimary)) {
+    BottomNavigation {
         Row {
             TextButton(modifier = Modifier.weight(1f).fillMaxHeight(), onClick = { navigationViewModel.resetScreenState() }) {
                 Text(text = "홈", color = if (screenState == ScreenState.HOME) purple200 else Color.White)

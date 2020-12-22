@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.onActive
+import androidx.compose.runtime.onDispose
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,11 +35,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.seroo.wordbook.NavigationViewModel
+import io.seroo.wordbook.component.root.LoadingComponent
 import io.seroo.wordbook.component.word.WordUIModel
 
 @Composable
 fun GameView(navigationViewModel: NavigationViewModel, gameViewModel: GameViewModel) {
-//    val isCurrentGameEnded by gameViewModel.isCurrentGameEnd.observeAsState(false)
+    val isGameInit by gameViewModel.isGameInit.observeAsState(false)
     val currentPosition by gameViewModel.currentPosition.observeAsState(0)
     val problemWords by gameViewModel.problemWords.observeAsState(initial = listOf())
 
@@ -49,10 +51,16 @@ fun GameView(navigationViewModel: NavigationViewModel, gameViewModel: GameViewMo
             )
         },
     ) {
-
-        when (problemWords.isEmpty()) {
-            true -> gameViewModel.makeWordProblem(currentPosition)
-            false -> GameBodyComponent(navigationViewModel, gameViewModel, currentPosition, problemWords)
+        when (isGameInit) {
+            true -> {
+                Log.d("GYH", "gameBodyVisible")
+                GameBodyComponent(navigationViewModel, gameViewModel, currentPosition, problemWords)
+            }
+            false -> gameViewModel.run {
+                Log.d("GYH", "getALlWords")
+                getAllWordsAndCompose(currentPosition)
+                LoadingComponent()
+            }
         }
     }
 }
@@ -64,11 +72,9 @@ fun GameBodyComponent(
     currentPosition: Int,
     wordList: List<WordUIModel>
 ) {
-    val isLastPage by gameViewModel.isLastPage.observeAsState(false)
     val result = gameViewModel.getResultByPosition(currentPosition)
     val context = AmbientContext.current
-    val interval by gameViewModel.interval.observeAsState(5F)
-    onActive { gameViewModel.flowInterval(5F) }
+    onDispose { gameViewModel.reset() }
     Column {
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -81,8 +87,7 @@ fun GameBodyComponent(
             )
         }
 
-        Log.d("GYH", "test : ${(interval / 5F)}")
-        LinearProgressIndicator(progress = ((interval / 5F)), modifier = Modifier.fillMaxWidth())
+//        LinearProgressIndicator(progress = ((interval / 5F)), modifier = Modifier.fillMaxWidth())
 
         LazyColumnForIndexed(
             wordList,
@@ -90,12 +95,13 @@ fun GameBodyComponent(
         ) { i, item ->
             Row(
                 modifier = Modifier.clickable {
-                    val toastText = if (item.id == result.id) "정답!!" else "오답 ㅜㅜ"
-                    Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, if (item.id == result.id) "정답!!" else "오답 ㅜㅜ", Toast.LENGTH_SHORT).show()
                     gameViewModel.run {
                         clickWord(currentPosition, item.id, result.id)
-                        when (isLastPage) {
-                            true -> navigationViewModel.resetScreenState()
+                        when (gameViewModel.isLastPage()) {
+                            true -> {
+                                navigationViewModel.resetScreenState()
+                            }
                             false -> moveToNextPosition()
                         }
                     }

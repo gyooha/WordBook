@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun <T> LazyGridForIndexed(
+    modifier: Modifier = Modifier,
     items: List<T> = listOf(),
     rows: Int,
     padding: Dp,
@@ -25,7 +26,7 @@ fun <T> LazyGridForIndexed(
     val chunkedList = items.chunked(rows)
     LazyColumnForIndexed(
         items = chunkedList,
-        modifier = Modifier.padding(horizontal = padding)
+        modifier = modifier.padding(horizontal = padding)
     ) { index, item ->
         if (index == 0) Spacer(modifier = Modifier.padding(top = padding, bottom = padding / 2))
         if (index == item.size - 1) Spacer(

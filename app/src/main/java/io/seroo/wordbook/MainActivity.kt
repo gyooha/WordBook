@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        gameViewModel.init()
         setContent {
             WordBookTheme {
                 // A surface container using the 'background' color from the theme

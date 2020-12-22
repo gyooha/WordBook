@@ -6,90 +6,73 @@ import androidx.lifecycle.*
 import io.seroo.data.CoroutineDispatcher
 import io.seroo.data.repository.WordRepository
 import io.seroo.wordbook.component.word.WordUIModel
+import io.seroo.wordbook.component.word.toWord
+import io.seroo.wordbook.component.word.toWordByUpdated
 import io.seroo.wordbook.component.word.toWordUIModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.random.Random
 
 class GameViewModel @ViewModelInject constructor(
     private val wordRepository: WordRepository,
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
-    /*private val _maxSize = MutableLiveData<Int>(0)
-    val maxSize: LiveData<Int> get() = _maxSize*/
 
     private var _maxSize = 0
 
     private var _allWords = listOf<WordUIModel>()
 
-    /*private val _allWords = MutableLiveData<List<WordUIModel>>()
-    val allWords: LiveData<List<WordUIModel>> get() = _allWords*/
-
     private var _resultWords = listOf<WordUIModel>()
-
-    /*private val _resultWords = MutableLiveData<List<WordUIModel>>()
-    val resultWords: LiveData<List<WordUIModel>> get() = _resultWords*/
 
     private val _currentPosition = MutableLiveData(0)
     val currentPosition: LiveData<Int> get() = _currentPosition
 
-    private val _isCurrentGameEnd = MutableLiveData<Boolean>(false)
-    val isCurrentGameEnd: LiveData<Boolean> get() = _isCurrentGameEnd
-
     private val _problemWords = MutableLiveData<List<WordUIModel>>(listOf())
     val problemWords: LiveData<List<WordUIModel>> get() = _problemWords
 
-    val isLastPage: LiveData<Boolean> = Transformations.map(_currentPosition) {
-        it == _maxSize
-    }
+    private val _isGameInit = MutableLiveData<Boolean>()
+    val isGameInit: LiveData<Boolean> get() = _isGameInit
 
     private val _interval = MutableLiveData<Float>()
     val interval: LiveData<Float> get() = _interval
 
     private val scoreMap: HashMap<Int, Boolean> = hashMapOf()
 
-    fun init() {
+    fun getAllWordsAndCompose(currentPosition: Int) {
         wordRepository.selectWordsForGame(10)
-            .map { it.map { it.toWordUIModel() } }
-            .flowOn(dispatcher.IO)
-            .onEach {
-                _resultWords = it
-                _maxSize = it.size - 1
+            .zip(wordRepository.selectWordsByLimit(100)) { resultWords, allWords ->
+                resultWords.map { it.toWordUIModel() } to allWords.map { it.toWordUIModel() }
             }
-            .catch { it.printStackTrace() }
-            .launchIn(viewModelScope)
-
-        wordRepository.selectWordsForGame(100)
-            .map { it.map { it.toWordUIModel() } }
             .flowOn(dispatcher.IO)
-            .onEach { _allWords = it }
+            .onEach { (resultWords, allWords) ->
+                _resultWords = resultWords
+                _allWords = allWords
+                _maxSize = resultWords.size - 1
+                makeWordProblem(currentPosition)
+            }
+            .onCompletion { _isGameInit.value = true }
             .catch { it.printStackTrace() }
+            .flowOn(Dispatchers.Main)
             .launchIn(viewModelScope)
     }
 
     fun moveToNextPosition() {
-        flowOf(2L)
-            .map {
-                delay(it)
-                it
-            }
-            .flowOn(dispatcher.Default)
-            .onEach {
-                _currentPosition.value = _currentPosition.value!! + 1
-                makeWordProblem(_currentPosition.value!!)
-            }
-            .flowOn(dispatcher.Main)
-            .launchIn(viewModelScope)
+        val currentPosition = _currentPosition.value ?: return
+        val nextPosition = currentPosition + 1
+        _currentPosition.value = nextPosition
+        makeWordProblem(nextPosition)
     }
 
-    fun makeWordProblem(currentPosition: Int) {
+    private fun makeWordProblem(currentPosition: Int) {
         flowOf(_resultWords)
             .zip(flowOf(_allWords)) { resultWords,  allWords ->
                 val currentResult = resultWords[currentPosition]
-                val list = listOf(currentResult) + allWords
-                    .filter { currentResult.id != it.id }
-                    .take(3)
-                list
+                getRandomWord(currentResult, allWords)
             }
             .map { it.shuffled(Random) }
             .flowOn(dispatcher.Default)
@@ -101,10 +84,34 @@ class GameViewModel @ViewModelInject constructor(
             .launchIn(viewModelScope)
     }
 
+    private tailrec fun getRandomWord(
+        resultWord: WordUIModel,
+        allWords: List<WordUIModel>,
+        problemWords: List<WordUIModel> = listOf()
+    ): List<WordUIModel> = when {
+        allWords.isEmpty() || problemWords.size == 3 -> problemWords + resultWord
+        else -> {
+            val randomPosition = Random.nextInt(0, allWords.size)
+            val targetWord = allWords[randomPosition]
+            val newProblemWords = if (resultWord.id == targetWord.id) {
+                problemWords
+            } else {
+                problemWords + targetWord
+            }
+            getRandomWord(resultWord, allWords.drop(1), newProblemWords)
+        }
+    }
+
     fun getResultByPosition(currentPosition: Int): WordUIModel = _resultWords[currentPosition]
 
     fun clickWord(currentPosition: Int, clickedWordId: Long, resultId: Long) {
         scoreMap[currentPosition] = resultId == clickedWordId
+        _resultWords.getOrNull(currentPosition)?.let { actualWord ->
+            wordRepository.updateWords(actualWord.toWordByUpdated())
+                .catch { it.printStackTrace() }
+                .flowOn(dispatcher.IO)
+                .launchIn(viewModelScope)
+        }
     }
 
     fun flowInterval(target: Float) {
@@ -117,8 +124,21 @@ class GameViewModel @ViewModelInject constructor(
         }.flowOn(dispatcher.Default)
             .onStart { _interval.value = target }
             .onEach { _interval.value = target - it }
-            .catch { Log.e("GYH", it.message ?: "") }
+            .catch { it.printStackTrace() }
             .flowOn(dispatcher.Main)
             .launchIn(viewModelScope)
+    }
+
+    fun isLastPage() = _currentPosition.value == _maxSize
+
+    fun reset() {
+        Log.d("GYH", "gameViewModel.reset")
+        _maxSize = 0
+        _allWords = listOf()
+        _resultWords = listOf()
+        _problemWords.value = listOf()
+        _currentPosition.value = 0
+        _isGameInit.value = false
+        scoreMap.clear()
     }
 }

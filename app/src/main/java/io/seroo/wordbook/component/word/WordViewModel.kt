@@ -55,7 +55,7 @@ class WordViewModel @ViewModelInject constructor(
             dummyList[_selectedWordPosition] = wordUIModel
             _wordList.value = dummyList
 
-            wordRepository.updateWords(wordUIModel.toWord())
+            wordRepository.updateWords(wordUIModel.toWordByUpdated())
                 .flowOn(dispatchers.IO)
                 .catch { it.printStackTrace() }
                 .launchIn(viewModelScope)

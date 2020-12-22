@@ -1,7 +1,11 @@
 package io.seroo.wordbook.component.word
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -19,6 +23,7 @@ import io.seroo.wordbook.NavigationViewModel
 import io.seroo.wordbook.ScreenState
 import io.seroo.wordbook.component.common.LazyGridForIndexed
 import io.seroo.wordbook.component.root.BottomNavigationComponent
+import io.seroo.wordbook.ui.purple200
 
 @Composable
 fun WordView(navigationViewModel: NavigationViewModel, wordViewModel: WordViewModel) {
@@ -48,16 +53,17 @@ fun WordView(navigationViewModel: NavigationViewModel, wordViewModel: WordViewMo
             BottomNavigationComponent(navigationViewModel = navigationViewModel)
         },
     ) {
-        WordCardListComponent(wordViewModel = wordViewModel) {
+        WordCardListComponent(Modifier.padding(it), wordViewModel = wordViewModel) {
             navigationViewModel.addScreenState(ScreenState.EDITOR)
         }
     }
 }
 
 @Composable
-fun WordCardListComponent(wordViewModel: WordViewModel, onClick: () -> Unit = { Unit }) {
+fun WordCardListComponent(modifier: Modifier, wordViewModel: WordViewModel, onClick: () -> Unit) {
     val wordList by wordViewModel.wordList.observeAsState(listOf())
     LazyGridForIndexed(
+        modifier = modifier,
         items = wordList,
         rows = 2,
         padding = 8.dp,
@@ -78,7 +84,7 @@ private fun WordCardComponent(word: WordUIModel, modifier: Modifier = Modifier) 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = word.word)
-        if(word.meanSecond.isNotEmpty()) Text(text = word.meanSecond)
         if(word.meanFirst.isNotEmpty()) Text(text = word.meanFirst)
+        if(word.meanSecond.isNotEmpty()) Text(text = word.meanSecond)
     }
 }

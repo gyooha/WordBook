@@ -1,8 +1,11 @@
 package io.seroo.wordbook.component.word
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.FlowColumn
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onActive
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusRequester
@@ -37,12 +41,10 @@ fun WordUpdateableComponent(wordUIModel: WordUIModel?, onClick: (WordUIModel) ->
     val focusRequester1 = FocusRequester()
     val focusRequester2 = FocusRequester()
     val focusRequester3 = FocusRequester()
-    FlowColumn(
-        crossAxisSpacing = 10.dp,
-        mainAxisSpacing = 10.dp
-        /*modifier = Modifier.fillMaxWidth().fillMaxHeight().focusObserver {  },
+    Column(
+        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top*/
+        verticalArrangement = Arrangement.Top
     ) {
         TextField(
             value = word,
