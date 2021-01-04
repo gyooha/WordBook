@@ -1,7 +1,12 @@
 package io.seroo.wordbook.component.word
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayout
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -14,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.seroo.wordbook.NavigationViewModel
 
+@ExperimentalLayout
 @Composable
 fun WordCreateView(navigationViewModel: NavigationViewModel, wordViewModel: WordViewModel) {
     Scaffold(
@@ -37,6 +43,7 @@ fun WordCreateView(navigationViewModel: NavigationViewModel, wordViewModel: Word
     }
 }
 
+@ExperimentalLayout
 @Composable
 fun WordCreateComponent(navigationViewModel: NavigationViewModel, wordViewModel: WordViewModel) {
     Column(

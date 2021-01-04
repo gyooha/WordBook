@@ -16,6 +16,7 @@ interface WordLocalDataSource {
     fun selectWords(): Flow<List<Word>>
     fun selectWordsByLimit(limit: Int): Flow<List<Word>>
     fun selectWordsForGame(limit: Int): Flow<List<Word>>
+    fun replace(vararg words: Word): Flow<Unit>
 }
 
 @Singleton
@@ -50,5 +51,9 @@ class WordLocalDataSourceImpl @Inject constructor(private val wordDao: WordDao):
 
     override fun selectWords(): Flow<List<Word>> = flow {
         emit(wordDao.selectWords())
+    }
+
+    override fun replace(vararg words: Word): Flow<Unit> = flow {
+        emit(wordDao.replace(*words))
     }
 }

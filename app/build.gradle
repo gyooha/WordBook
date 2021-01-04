@@ -42,9 +42,10 @@ android {
 }
 
 dependencies {
-    implementation project(":data")
+    implementation project(':csv')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.activity:activity-ktx:1.2.0-rc01'
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
@@ -59,13 +60,13 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.runtime:runtime:$compose_version"
 
-    def lifecycle_version = "2.3.0-beta01"
+    def lifecycle_version = "2.3.0-rc01"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
-    def activity_version = "1.2.0-beta02"
+    def activity_version = "1.2.0-rc01"
     implementation "androidx.activity:activity-ktx:$activity_version"
 
     def appcompat_version = "1.2.0"

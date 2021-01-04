@@ -26,4 +26,13 @@ interface WordDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateWord(vararg word: Word)
+
+    @Query("DELETE FROM words")
+    suspend fun deleteAll()
+
+    @Transaction
+    suspend fun replace(vararg words: Word) {
+        deleteAll()
+        insertWord(*words)
+    }
 }

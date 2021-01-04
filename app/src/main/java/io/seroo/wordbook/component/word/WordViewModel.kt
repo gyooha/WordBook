@@ -1,13 +1,19 @@
 package io.seroo.wordbook.component.word
 
-import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.seroo.data.CoroutineDispatcher
 import io.seroo.data.model.Word
 import io.seroo.data.repository.WordRepository
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlin.properties.Delegates
 
 class WordViewModel @ViewModelInject constructor(
@@ -18,7 +24,7 @@ class WordViewModel @ViewModelInject constructor(
     private val _wordList = MutableLiveData<List<WordUIModel>>()
     val wordList: LiveData<List<WordUIModel>> get() = _wordList
 
-    private var _selectedWordPosition by Delegates.observable(-1) { _, old, new -> }
+    private var _selectedWordPosition by Delegates.observable(-1) { _, _, _ -> }
 
     init {
         wordRepository.selectWords()

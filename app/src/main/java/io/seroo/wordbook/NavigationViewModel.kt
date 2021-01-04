@@ -48,6 +48,6 @@ enum class ScreenState {
     HOME,
     EDITOR,
     CREATE,
-    ALARM,
+    SETTING,
     GAME
 }

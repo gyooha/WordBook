@@ -14,6 +14,7 @@ interface WordRepository {
     fun selectWordsByLimit(limit: Int): Flow<List<Word>>
     fun selectWordsForGame(limit: Int): Flow<List<Word>>
     fun selectWords(): Flow<List<Word>>
+    fun replace(vararg words: Word): Flow<Unit>
 }
 
 @Singleton
@@ -33,4 +34,6 @@ class WordRepositoryImpl @Inject constructor(
     override fun selectWordsForGame(limit: Int): Flow<List<Word>> = localDataSource.selectWordsForGame(limit)
 
     override fun selectWords(): Flow<List<Word>> = localDataSource.selectWords()
+
+    override fun replace(vararg words: Word): Flow<Unit> = localDataSource.replace(*words)
 }

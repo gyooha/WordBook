@@ -1,11 +1,8 @@
 package io.seroo.wordbook.component.root
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.BottomNavigation
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -27,8 +24,8 @@ fun BottomNavigationComponent(navigationViewModel: NavigationViewModel) {
                 Text(text = "홈", color = if (screenState == ScreenState.HOME) purple200 else Color.White)
             }
 
-            TextButton(modifier = Modifier.weight(1f).fillMaxHeight(), onClick = { navigationViewModel.addScreenState(ScreenState.ALARM) }) {
-                Text(text = "알림", color = if (screenState == ScreenState.ALARM) purple200 else Color.White)
+            TextButton(modifier = Modifier.weight(1f).fillMaxHeight(), onClick = { navigationViewModel.addScreenState(ScreenState.SETTING) }) {
+                Text(text = "알림", color = if (screenState == ScreenState.SETTING) purple200 else Color.White)
             }
         }
     }

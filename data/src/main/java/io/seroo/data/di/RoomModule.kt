@@ -10,8 +10,8 @@ import io.seroo.data.db.WordDataBase
 import io.seroo.data.db.dao.WordDao
 import javax.inject.Singleton
 
-@InstallIn(ApplicationComponent::class)
 @Module
+@InstallIn(ApplicationComponent::class)
 object RoomModule {
 
     @Singleton
