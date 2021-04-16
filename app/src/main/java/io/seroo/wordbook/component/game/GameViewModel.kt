@@ -1,11 +1,11 @@
 package io.seroo.wordbook.component.game
 
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.seroo.data.CoroutineDispatcher
 import io.seroo.data.repository.WordRepository
 import io.seroo.wordbook.component.word.WordUIModel
@@ -23,19 +23,12 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.zip
-import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.drop
-import kotlin.collections.getOrNull
-import kotlin.collections.hashMapOf
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.plus
+import javax.inject.Inject
 import kotlin.collections.set
-import kotlin.collections.shuffled
 import kotlin.random.Random
 
-class GameViewModel @ViewModelInject constructor(
+@HiltViewModel
+class GameViewModel @Inject constructor(
     private val wordRepository: WordRepository,
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {

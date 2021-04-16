@@ -5,18 +5,22 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
 import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.android.scopes.ActivityScoped
+import dagger.hilt.android.scopes.ViewModelScoped
 import java.io.File
 import javax.inject.Inject
+import javax.inject.Singleton
 
 interface ContextWrapper {
     fun startActivity(intent: Intent)
     fun getFileSendIntent(file: File): Intent
 }
 
-@ActivityScoped
+@Singleton
 class ContextWrapperImpl @Inject constructor(
-    @ActivityContext
+    @ApplicationContext
     private val context: Context
 ): ContextWrapper {
 

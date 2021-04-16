@@ -14,20 +14,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.onDispose
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,7 +50,12 @@ fun GameView(navigationViewModel: NavigationViewModel, gameViewModel: GameViewMo
         },
     ) {
         when (isGameInit) {
-            true -> GameBodyComponent(navigationViewModel, gameViewModel, currentPosition, problemWords)
+            true -> GameBodyComponent(
+                navigationViewModel,
+                gameViewModel,
+                currentPosition,
+                problemWords
+            )
             false -> gameViewModel.run {
                 getAllWordsAndCompose(currentPosition)
                 LoadingComponent()
@@ -65,9 +71,11 @@ fun GameBodyComponent(
     currentPosition: Int,
     wordList: List<WordUIModel>
 ) {
+    val context = LocalContext.current
     val result = gameViewModel.getResultByPosition(currentPosition)
-    val context = AmbientContext.current
-    onDispose { gameViewModel.reset() }
+    DisposableEffect(null) {
+        onDispose { gameViewModel.reset() }
+    }
     Column {
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -82,26 +90,39 @@ fun GameBodyComponent(
 
 //        LinearProgressIndicator(progress = ((interval / 5F)), modifier = Modifier.fillMaxWidth())
 
-        LazyColumn(modifier = Modifier.padding(start = 4.dp, end = 4.dp).fillMaxWidth()) {
+        LazyColumn(
+            modifier = Modifier
+                .padding(start = 4.dp, end = 4.dp)
+                .fillMaxWidth()
+        ) {
             itemsIndexed(wordList) { index, item ->
                 Row(
-                    modifier = Modifier.clickable {
-                        Toast.makeText(context, if (item.id == result.id) "정답!!" else "오답 ㅜㅜ", Toast.LENGTH_SHORT).show()
-                        gameViewModel.run {
-                            clickWord(currentPosition, item.id, result.id)
-                            when (gameViewModel.isLastPage()) {
-                                true -> {
-                                    navigationViewModel.resetScreenState()
+                    modifier = Modifier
+                        .clickable {
+                            Toast.makeText(
+                                    context,
+                                    if (item.id == result.id) "정답!!" else "오답 ㅜㅜ",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                            gameViewModel.run {
+                                clickWord(currentPosition, item.id, result.id)
+                                when (gameViewModel.isLastPage()) {
+                                    true -> {
+                                        navigationViewModel.resetScreenState()
+                                    }
+                                    false -> moveToNextPosition()
                                 }
-                                false -> moveToNextPosition()
                             }
                         }
-                    }.fillMaxWidth().sizeIn(minHeight = 42.dp),
+                        .fillMaxWidth()
+                        .sizeIn(minHeight = 42.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Surface(
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
                             .size(24.dp)
                             .clip(CircleShape)
                             .border(width = 1.dp, shape = CircleShape, color = Color.White),
@@ -110,11 +131,17 @@ fun GameBodyComponent(
                             text = "${index + 1}",
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth().fillMaxHeight().align(Alignment.CenterVertically)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .align(Alignment.CenterVertically)
                         )
                     }
                     Spacer(modifier = Modifier.size(8.dp))
-                    Text(text = item.meanFirst, modifier = Modifier.align(Alignment.CenterVertically))
+                    Text(
+                        text = item.meanFirst,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
                 }
             }
         }

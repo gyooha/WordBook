@@ -1,11 +1,13 @@
 package io.seroo.wordbook
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class NavigationViewModel @ViewModelInject constructor(): ViewModel() {
+@HiltViewModel
+class NavigationViewModel @Inject constructor(): ViewModel() {
 
     private var screenStates = listOf(ScreenState.HOME)
 

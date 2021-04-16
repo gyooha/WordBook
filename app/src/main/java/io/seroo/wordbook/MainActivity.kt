@@ -1,16 +1,16 @@
 package io.seroo.wordbook
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.ExperimentalLayout
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.platform.setContent
 import dagger.hilt.android.AndroidEntryPoint
 import io.seroo.wordbook.component.game.GameView
 import io.seroo.wordbook.component.game.GameViewModel
@@ -23,7 +23,7 @@ import io.seroo.wordbook.component.word.WordViewModel
 import io.seroo.wordbook.ui.WordBookTheme
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private val navigationViewModel: NavigationViewModel by viewModels()
     private val wordViewModel: WordViewModel by viewModels()
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @ExperimentalFoundationApi
-    @ExperimentalLayout
+    @ExperimentalLayoutApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -28,8 +29,8 @@ import io.seroo.wordbook.NavigationViewModel
 import io.seroo.wordbook.ScreenState
 import io.seroo.wordbook.component.root.BottomNavigationComponent
 
-@Composable
 @ExperimentalFoundationApi
+@Composable
 fun WordView(navigationViewModel: NavigationViewModel, wordViewModel: WordViewModel) {
     Scaffold(
         topBar = {
@@ -50,7 +51,7 @@ fun WordView(navigationViewModel: NavigationViewModel, wordViewModel: WordViewMo
                 onClick = { navigationViewModel.addScreenState(ScreenState.CREATE) },
                 shape = CircleShape
             ) {
-                Icon(imageVector = Icons.Default.Add, modifier = Modifier.size(24.dp))
+                Icon(imageVector = Icons.Default.Add, null, modifier = Modifier.size(24.dp))
             }
         },
         bottomBar = {
@@ -63,8 +64,8 @@ fun WordView(navigationViewModel: NavigationViewModel, wordViewModel: WordViewMo
     }
 }
 
-@Composable
 @ExperimentalFoundationApi
+@Composable
 fun WordCardListComponent(modifier: Modifier, wordViewModel: WordViewModel, onClick: () -> Unit) {
     val wordList by wordViewModel.wordList.observeAsState(listOf())
     LazyVerticalGrid(

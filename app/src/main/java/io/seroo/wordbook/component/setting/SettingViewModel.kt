@@ -1,11 +1,11 @@
 package io.seroo.wordbook.component.setting
 
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.seroo.data.model.WordWrapper
 import io.seroo.data.repository.FileRepository
 import io.seroo.data.repository.WordRepository
@@ -17,8 +17,10 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.io.InputStream
+import javax.inject.Inject
 
-class SettingViewModel @ViewModelInject constructor(
+@HiltViewModel
+class SettingViewModel @Inject constructor(
     private val wordRepository: WordRepository,
     private val contextWrapper: ContextWrapper,
     private val fileRepository: FileRepository
