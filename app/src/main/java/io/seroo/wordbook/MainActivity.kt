@@ -31,7 +31,9 @@ class MainActivity : AppCompatActivity() {
     private val gameViewModel: GameViewModel by viewModels()
 
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { settingViewModel.saveCSVToWrodsDataBase(uri) }
+        if (uri != null && contentResolver.openInputStream(uri) != null) {
+            settingViewModel.saveJsonFileToWordDataBase(contentResolver.openInputStream(uri)!!)
+        }
     }
 
     @ExperimentalFoundationApi

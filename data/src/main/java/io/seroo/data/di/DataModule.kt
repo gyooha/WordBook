@@ -6,10 +6,17 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import io.seroo.data.CoroutineDispatcher
+import io.seroo.data.repository.FileRepository
+import io.seroo.data.repository.FileRepositoryImpl
 import io.seroo.data.repository.WordRepository
 import io.seroo.data.repository.WordRepositoryImpl
+import io.seroo.data.service.FileService
+import io.seroo.data.service.FileServiceImpl
 import io.seroo.data.source.WordLocalDataSource
 import io.seroo.data.source.WordLocalDataSourceImpl
+import io.seroo.data.source.local.FileLocalDataSource
+import io.seroo.data.source.local.FileLocalDataSourceImpl
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
@@ -20,6 +27,15 @@ abstract class DataModule {
         @Provides
         @Singleton
         fun provideCoroutineDispatcher() = CoroutineDispatcher()
+
+        @Provides
+        @Singleton
+        fun json(): Json = Json {
+            coerceInputValues = true
+            ignoreUnknownKeys = true
+            isLenient = true
+            encodeDefaults = true
+        }
     }
 
     @Binds
@@ -29,4 +45,16 @@ abstract class DataModule {
     @Binds
     @Singleton
     abstract fun bindWordLocalDataSource(wordLocalDataSourceImpl: WordLocalDataSourceImpl): WordLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindFileRepository(fileRepositoryImpl: FileRepositoryImpl): FileRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFileLocalDataSource(fileLocalDataSourceImpl: FileLocalDataSourceImpl): FileLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindFileService(fileServiceImpl: FileServiceImpl): FileService
 }

@@ -1,6 +1,12 @@
 package io.seroo.data.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import io.seroo.data.model.Word
 
 @Dao
@@ -20,9 +26,6 @@ interface WordDao {
 
     @Query("SELECT * FROM words LIMIT :limit")
     suspend fun selectWordsByLimit(limit: Int): List<Word>
-
-    @Query("SELECT * FROM words ORDER BY updated_at ASC LIMIT :limit")
-    suspend fun selectWordsForGame(limit: Int): List<Word>
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateWord(vararg word: Word)

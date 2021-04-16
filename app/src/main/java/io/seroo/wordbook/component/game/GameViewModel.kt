@@ -2,20 +2,37 @@ package io.seroo.wordbook.component.game
 
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.seroo.data.CoroutineDispatcher
 import io.seroo.data.repository.WordRepository
 import io.seroo.wordbook.component.word.WordUIModel
-import io.seroo.wordbook.component.word.toWord
 import io.seroo.wordbook.component.word.toWordByUpdated
 import io.seroo.wordbook.component.word.toWordUIModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.zip
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.drop
+import kotlin.collections.getOrNull
+import kotlin.collections.hashMapOf
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.plus
+import kotlin.collections.set
+import kotlin.collections.shuffled
 import kotlin.random.Random
 
 class GameViewModel @ViewModelInject constructor(
@@ -44,7 +61,7 @@ class GameViewModel @ViewModelInject constructor(
     private val scoreMap: HashMap<Int, Boolean> = hashMapOf()
 
     fun getAllWordsAndCompose(currentPosition: Int) {
-        wordRepository.selectWordsForGame(10)
+        wordRepository.selectWordsByLimit(10)
             .zip(wordRepository.selectWordsByLimit(100)) { resultWords, allWords ->
                 resultWords.map { it.toWordUIModel() } to allWords.map { it.toWordUIModel() }
             }
